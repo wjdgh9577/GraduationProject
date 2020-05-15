@@ -54,9 +54,9 @@ def rotation(mocap, tree, frame_number, joint='ROOT', matrix=np.identity(3)):
     for child in tree[joint]:
         rotate = mocap.frame_joint_channels(frame_number, child.name, child.channels)
         if joint == 'ROOT':
-            rotate = yRotation(rotate[5]) @ xRotation(rotate[4]) @ zRotation(rotate[3]) @ matrix
+            rotate = matrix @ yRotation(rotate[5]) @ xRotation(rotate[4]) @ zRotation(rotate[3])# @ matrix
         else:
-            rotate = yRotation(rotate[2]) @ xRotation(rotate[1]) @ zRotation(rotate[0]) @ matrix
+            rotate = matrix @ yRotation(rotate[2]) @ xRotation(rotate[1]) @ zRotation(rotate[0])# @ matrix
         child.rotate = rotate
         rotation(mocap, tree, frame_number, child.name, child.rotate)
 
@@ -65,7 +65,7 @@ def draw(tree, frame_number, joint='ROOT', parentPos=None, color=[0, 1, 0]):
         return
     C = color.copy()
     c = C.pop(0)
-    C.append(c)
+    C = [c] + C
     for child in tree[joint]:
         childPos = child.rotation()/50
         if parentPos is not None:
@@ -73,7 +73,8 @@ def draw(tree, frame_number, joint='ROOT', parentPos=None, color=[0, 1, 0]):
             p.addUserDebugLine(parentPos, childPos, color)
         else:
             childPos += np.array(mocap.frame_joint_channels(frame_number, child.name, ['Xposition', 'Yposition', 'Zposition']))/50
-
+        if child.name == "Head":
+            p.loadURDF("bullet3/examples/pybullet/gym/pybullet_data/sphere_small.urdf", childPos)
         draw(tree, frame_number, child.name, childPos, C)
 
 with open("Male2_bvh/Male2_A1_Stand.bvh") as f:

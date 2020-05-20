@@ -1,21 +1,22 @@
 import pybullet as p
 import numpy as np
+from math import radians, cos, sin
 from bvh import Bvh
 import time
 
 def xRotation(seta):
     return np.array([[1, 0, 0],
-                     [0, np.cos(seta*np.pi/180), -np.sin(seta*np.pi/180)],
-                     [0, np.sin(seta*np.pi/180), np.cos(seta*np.pi/180)]])
+                     [0, cos(radians(seta)), -sin(radians(seta))],
+                     [0, np.sin(seta*np.pi/180), np.cos(radians(seta))]])
 
 def yRotation(seta):
-    return np.array([[np.cos(seta*np.pi/180), 0, -np.sin(seta*np.pi/180)],
+    return np.array([[cos(radians(seta)), 0, sin(radians(seta))],
                      [0, 1, 0],
-                     [np.sin(seta*np.pi/180), 0, np.cos(seta*np.pi/180)]])
+                     [-sin(radians(seta)), 0, cos(seta*np.pi/180)]])
 
 def zRotation(seta):
-    return np.array([[np.cos(seta*np.pi/180), -np.sin(seta*np.pi/180), 0],
-                     [np.sin(seta*np.pi/180), np.cos(seta*np.pi/180), 0],
+    return np.array([[cos(radians(seta)), -sin(radians(seta)), 0],
+                     [sin(radians(seta)), cos(radians(seta)), 0],
                      [0, 0, 1]])
 
 class Joint:
@@ -54,9 +55,9 @@ def rotation(mocap, tree, frame_number, joint='ROOT', matrix=np.identity(3)):
     for child in tree[joint]:
         rotate = mocap.frame_joint_channels(frame_number, child.name, child.channels)
         if joint == 'ROOT':
-            rotate = yRotation(rotate[5]) @ xRotation(rotate[4]) @ zRotation(rotate[3]) @ matrix
+            rotate = matrix @ yRotation(rotate[5]) @ xRotation(rotate[4]) @ zRotation(rotate[3])
         else:
-            rotate = yRotation(rotate[2]) @ xRotation(rotate[1]) @ zRotation(rotate[0]) @ matrix
+            rotate = matrix @ yRotation(rotate[2]) @ xRotation(rotate[1]) @ zRotation(rotate[0])
         child.rotate = rotate
         rotation(mocap, tree, frame_number, child.name, child.rotate)
 

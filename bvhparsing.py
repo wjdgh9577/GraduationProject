@@ -77,7 +77,7 @@ def draw(tree, frame_number, joint='ROOT', parentPos=None, color=[0, 1, 0]):
 
         draw(tree, frame_number, child.name, childPos, C)
 
-with open("Male2_bvh/Male2_A1_Stand.bvh") as f:
+with open("Male2_bvh/example1.bvh") as f:
     mocap = Bvh(f.read())
 
 joints, tree = scan(mocap)

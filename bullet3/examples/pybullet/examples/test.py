@@ -15,7 +15,7 @@ import time
 pybullet.connect(pybullet.GUI)
 pybullet.loadURDF(os.path.join(pybullet_data.getDataPath(), "plane.urdf"), 0, 0, -1)
 #load URDF, given a relative or absolute file+path
-obj = pybullet.loadURDF(os.path.join(pybullet_data.getDataPath(), "humanoid/humanoid_test.urdf"))
+obj = pybullet.loadURDF(os.path.join(pybullet_data.getDataPath(), "humanoid/humanoid.urdf"))
 
 posX = 0
 posY = 3

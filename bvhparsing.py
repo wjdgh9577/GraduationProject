@@ -93,10 +93,10 @@ def draw(tree, frame_number, joint='ROOT', parentPos=None, color=[0, 1, 0]):
     for child in tree[joint]:
         childPos = child.transformation()[:-1]#/100
         if parentPos is not None:
-            childPos += np.array(mocap.frame_joint_channels(frame_number, 'Hips', ['Xposition', 'Yposition', 'Zposition']))#/100
+            childPos += np.array(mocap.frame_joint_channels(frame_number, 'Hips', ['Xposition', 'Yposition', 'Zposition']))/100
             p.addUserDebugLine(parentPos, childPos, color)
         else:
-            childPos += np.array(mocap.frame_joint_channels(frame_number, child.name, ['Xposition', 'Yposition', 'Zposition']))#/100
+            childPos += np.array(mocap.frame_joint_channels(frame_number, child.name, ['Xposition', 'Yposition', 'Zposition']))/100
 
         draw(tree, frame_number, child.name, childPos, C)
 
@@ -104,7 +104,7 @@ with open("Male2_bvh/Male2_A3_SwingArms.bvh") as f:
     mocap = Bvh(f.read())
 
 joints, tree = scan(mocap)
-
+print(len(joints))
 physicsClientID = p.connect(p.GUI)
 
 p.setGravity(0, 0, -10)
@@ -118,4 +118,4 @@ while p.isConnected():
         draw(tree, n)
         time.sleep(timeStep)
         p.removeAllUserDebugItems()
-        time.sleep(timeStep)
+        #time.sleep(timeStep)

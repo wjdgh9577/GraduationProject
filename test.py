@@ -1,42 +1,54 @@
+#os.sys.path.insert is only needed when pybullet is not installed
+#but running from github repo instead
+import os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+print("current_dir=" + currentdir)
+parentdir = os.path.join(currentdir, "../gym")
+os.sys.path.insert(0, parentdir)
+
 import pybullet as p
-import numpy as np
+import pybullet_data
+
 import time
 
-def xRotation(seta):
-    return np.array([[1, 0, 0],
-                     [0, np.cos(seta), -np.sin(seta)],
-                     [0, np.sin(seta), np.cos(seta)]])
+#choose connection method: GUI, DIRECT, SHARED_MEMORY
+p.connect(p.GUI)
+p.loadURDF(os.path.join(pybullet_data.getDataPath(), "plane.urdf"), 0, 0, 0)
+#load URDF, given a relative or absolute file+path
+obj = p.loadMJCF(os.path.join(pybullet_data.getDataPath(), "mjcf/model.xml"))
 
-def yRotation(seta):
-    return np.array([[np.cos(seta), 0, -np.sin(seta)],
-                     [0, 1, 0],
-                     [np.sin(seta), 0, np.cos(seta)]])
+posX = 0
+posY = 3
+posZ = 2
 
-def zRotation(seta):
-    return np.array([[np.cos(seta*np.pi/180), -np.sin(seta*np.pi/180), 0],
-                     [np.sin(seta*np.pi/180), np.cos(seta*np.pi/180), 0],
-                     [0, 0, 1]])
+#query the number of joints of the object
+print(obj[0])
+numJoints = p.getNumJoints(obj[0])
+for i in range(numJoints):
+    print(p.getJointInfo(obj[0], i))
+    print(p.getJointStateMultiDof(obj[0], i))
+    print()
+print("Number of Joints:", numJoints)
 
-physicsClientID = p.connect(p.GUI)
+#set the gravity acceleration
+p.setGravity(0, 0, -9.8)
+#p.setRealTimeSimulation(True)
 
-p.setGravity(0, 0, -10)
+f = 0
+start = time.time()
+while True:#time.time() < t_end:
+    p.stepSimulation()
+    current = time.time()
+    if f % 30 == 0:
+        print(current - start)
+    time.sleep(0.02)
+    f += 1
+    #posAndOrn = pybullet.getBasePositionAndOrientation(obj[0])
+    #print(posAndOrn)
 
-dot1 = np.array([0, 0, 1])
-vec1 = np.array([1, 1, 1])
-dot2 = dot1 + vec1
-vec2 = np.array([-1, -1, 1])
-dot3 = dot2 + vec2
-t = 0
+print("finished")
+#remove all objects
+p.resetSimulation()
 
-while p.isConnected():
-    p.addUserDebugLine(dot1, dot2, [1, 0, 0])
-    p.addUserDebugLine(dot2, dot3, [0, 0, 0])
-
-    vec1 = zRotation(t) @ np.array([1,1,1])
-    vec2 = xRotation(t) @ np.array([-1,-1,1])
-    dot2 = dot1 + vec1
-    dot3 = dot2 + vec2
-    time.sleep(0.1)
-    print(t)
-    t += 0.1
-    p.removeAllUserDebugItems()
+#disconnect from the physics server
+p.disconnect()

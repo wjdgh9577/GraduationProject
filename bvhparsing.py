@@ -4,30 +4,40 @@ from math import radians, cos, sin
 from bvh import Bvh
 import time
 
+def transpose(pos):
+    return np.array([[1, 0, 0, pos[0]],
+                     [0, 1, 0, pos[1]],
+                     [0, 0, 1, pos[2]],
+                     [0, 0, 0, 1]])
+
 def xRotation(seta):
-    return np.array([[1, 0, 0],
-                     [0, cos(radians(seta)), -sin(radians(seta))],
-                     [0, np.sin(seta*np.pi/180), np.cos(radians(seta))]])
+    return np.array([[1, 0, 0, 0],
+                     [0, cos(radians(seta)), -sin(radians(seta)), 0],
+                     [0, np.sin(seta*np.pi/180), np.cos(radians(seta)), 0],
+                     [0, 0, 0, 1]])
 
 def yRotation(seta):
-    return np.array([[cos(radians(seta)), 0, sin(radians(seta))],
-                     [0, 1, 0],
-                     [-sin(radians(seta)), 0, cos(seta*np.pi/180)]])
+    return np.array([[cos(radians(seta)), 0, sin(radians(seta)), 0],
+                     [0, 1, 0, 0],
+                     [-sin(radians(seta)), 0, cos(seta*np.pi/180), 0],
+                     [0, 0, 0, 1]])
 
 def zRotation(seta):
-    return np.array([[cos(radians(seta)), -sin(radians(seta)), 0],
-                     [sin(radians(seta)), cos(radians(seta)), 0],
-                     [0, 0, 1]])
+    return np.array([[cos(radians(seta)), -sin(radians(seta)), 0, 0],
+                     [sin(radians(seta)), cos(radians(seta)), 0, 0],
+                     [0, 0, 1, 0],
+                     [0, 0, 0, 1]])
 
 class Joint:
     def __init__(self, name):
         self.name = name
         self.offset = None
         self.channels = None
-        self.rotate = None
 
-    def rotation(self):
-        return self.rotate @ self.offset
+        self.transform = None
+
+    def transformation(self):
+        return self.transform @ np.array([0, 0, 0, 1])
 
 def scan(mocap):
     joints = list()   #[Hips, ToSpine, Spine, ...]
@@ -35,7 +45,7 @@ def scan(mocap):
     for name in mocap.get_joints_names():
         joints.append(name)
         joint = Joint(name)
-        joint.offset = xRotation(90) @ np.array(mocap.joint_offset(name))
+        joint.offset = np.array(mocap.joint_offset(name))
         joint.channels = mocap.joint_channels(name)
         parent = mocap.joint_parent(name)
         if parent is None:
@@ -48,45 +58,56 @@ def scan(mocap):
 
     return joints, tree
 
-def rotation(mocap, tree, frame_number, joint='ROOT', matrix=np.identity(3)):
+def rotation(mocap, tree, frame_number, joint='ROOT', matrix=xRotation(90)):
     if joint not in tree:
         return
 
     for child in tree[joint]:
-        rotate = mocap.frame_joint_channels(frame_number, child.name, child.channels)
+        name = child.name
+        offset = child.offset
+        channels = child.channels
+        rotate = mocap.frame_joint_channels(frame_number, name, channels)
         if joint == 'ROOT':
-            rotate = matrix @ yRotation(rotate[5]) @ xRotation(rotate[4]) @ zRotation(rotate[3])
+            pos = 3
         else:
-            rotate = matrix @ yRotation(rotate[2]) @ xRotation(rotate[1]) @ zRotation(rotate[0])
-        child.rotate = rotate
-        rotation(mocap, tree, frame_number, child.name, child.rotate)
+            pos = 0
+        M = transpose(offset)
+        for i in range(pos, pos+3):
+            M = M @ rotation1(channels[i], rotate[i])
+        transform = matrix @ M
+        child.transform = transform
+        rotation(mocap, tree, frame_number, name, transform)
+
+def rotation1(channel, rotate):
+    _channel = str.lower(channel)
+    _rotate = rotate
+    return {'xrotation' : xRotation(_rotate), 'yrotation' : yRotation(_rotate), 'zrotation' : zRotation(_rotate)}[_channel]
 
 def draw(tree, frame_number, joint='ROOT', parentPos=None, color=[0, 1, 0]):
     if joint not in tree:
         return
     C = color.copy()
     c = C.pop(0)
-    C = [c] + C
+    C.append(c)
+
     for child in tree[joint]:
-        childPos = child.rotation()/50
+        childPos = child.transformation()[:-1]#/100
         if parentPos is not None:
-            childPos += parentPos
+            childPos += np.array(mocap.frame_joint_channels(frame_number, 'Hips', ['Xposition', 'Yposition', 'Zposition']))/100
             p.addUserDebugLine(parentPos, childPos, color)
         else:
-            childPos += np.array(mocap.frame_joint_channels(frame_number, child.name, ['Xposition', 'Yposition', 'Zposition']))/50
-        if child.name == "Head":
-            p.loadURDF("bullet3/examples/pybullet/gym/pybullet_data/sphere_small.urdf", childPos)
+            childPos += np.array(mocap.frame_joint_channels(frame_number, child.name, ['Xposition', 'Yposition', 'Zposition']))/100
+
         draw(tree, frame_number, child.name, childPos, C)
 
-with open("Male2_bvh/example1.bvh") as f:
+with open("Male2_bvh/Male2_A3_SwingArms.bvh") as f:
     mocap = Bvh(f.read())
 
 joints, tree = scan(mocap)
-
+print(len(joints))
 physicsClientID = p.connect(p.GUI)
 
 p.setGravity(0, 0, -10)
-#planeID = p.loadURDF("bullet3/examples/pybullet/gym/pybullet_data/plane.urdf")
 
 timeStep = mocap.frame_time
 frames = mocap.nframes
@@ -97,4 +118,4 @@ while p.isConnected():
         draw(tree, n)
         time.sleep(timeStep)
         p.removeAllUserDebugItems()
-    time.sleep(timeStep)
+        #time.sleep(timeStep)

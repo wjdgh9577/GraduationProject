@@ -15,7 +15,7 @@ import time
 pybullet.connect(pybullet.GUI)
 pybullet.loadURDF(os.path.join(pybullet_data.getDataPath(), "plane.urdf"), 0, 0, -1)
 #load URDF, given a relative or absolute file+path
-obj = pybullet.loadURDF(os.path.join(pybullet_data.getDataPath(), "r2d2.urdf"))
+obj = pybullet.loadURDF(os.path.join(pybullet_data.getDataPath(), "humanoid/humanoid.urdf"))
 
 posX = 0
 posY = 3
@@ -33,7 +33,7 @@ pybullet.setGravity(0, 0, -9.8)
 
 #step the simulation for 5 seconds
 t_end = time.time() + 5
-while time.time() < t_end:
+while True:#time.time() < t_end:
   pybullet.stepSimulation()
   posAndOrn = pybullet.getBasePositionAndOrientation(obj)
   print(posAndOrn)

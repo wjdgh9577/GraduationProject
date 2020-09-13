@@ -1,17 +1,22 @@
 <mujoco model="humanoid">
     <compiler angle="degree" inertiafromgeom="true"/>
+
     <default>
         <joint armature="1" damping="1" limited="true"/>
         <geom conaffinity="1" condim="1" contype="1" margin="0.001" material="geom" rgba="0.8 0.6 .4 1"/>
         <motor ctrllimited="true" ctrlrange="-.4 .4"/>
     </default>
+
     <option integrator="RK4" iterations="50" solver="PGS" timestep="0.003">
         <!-- <flags solverstat="enable" energy="enable"/>-->
     </option>
+
     <size nkey="5" nuser_geom="1"/>
+
     <visual>
         <map fogend="5" fogstart="3"/>
     </visual>
+
     <asset>
         <texture builtin="gradient" height="100" rgb1=".4 .5 .6" rgb2="0 0 0" type="skybox" width="100"/>
         <!-- <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>-->
@@ -20,6 +25,7 @@
         <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
         <material name="geom" texture="texgeom" texuniform="true"/>
     </asset>
+
     <worldbody>
          <body name="torso" pos="0 0 1.4">
             <!--joint armature="0" damping="0" limited="false" name="root" pos="0 0 0" stiffness="0" type="free"/-->
@@ -83,6 +89,7 @@
             </body>
         </body>
     </worldbody>
+
     <tendon>
         <fixed name="left_hipknee">
             <joint coef="-1" joint="left_hip_y"/>
@@ -93,6 +100,7 @@
             <joint coef="1" joint="right_knee"/>
         </fixed>
     </tendon>
+
     <actuator><!-- this section is not supported, same constants in code -->
         <motor gear="100" joint="abdomen_y" name="abdomen_y"/>
         <motor gear="100" joint="abdomen_z" name="abdomen_z"/>

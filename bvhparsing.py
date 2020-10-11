@@ -2,6 +2,7 @@ import pybullet as p
 import numpy as np
 from math import radians, cos, sin
 from bvh import Bvh
+import math
 import time
 
 def transpose(pos):
@@ -28,6 +29,43 @@ def zRotation(seta):
                      [0, 0, 1, 0],
                      [0, 0, 0, 1]])
 
+def isclose(x, y, rtol=1.e-5, atol=1.e-8):
+    return abs(x-y) <= atol + rtol * abs(y)
+
+
+# rotation matrix -> euler angle
+def rotationMatrixToEulerAngles(R) :
+    
+    sy = math.sqrt(R[2,2] * R[2,2] +  R[2,0] * R[2,0])
+    
+    singular = sy < 1e-6
+
+    if  not singular :
+        x = -math.atan2(-R[2,1], sy)
+        y = math.atan2(-R[2,0] , R[2,2])
+        z = -math.atan2(R[0,1], R[1,1])
+    else :
+        x = -math.atan2(-R[2,1], sy)
+        y = math.atan2(R[2,0], R[2,2])
+        z = -0
+    #phi = 0.0
+    #if isclose(R[2,0],-1.0):
+    #    theta = math.pi/2.0
+    #    psi = math.atan2(R[0,1],R[0,2])
+    #elif isclose(R[2,0],1.0):
+    #    theta = -math.pi/2.0
+    #    psi = math.atan2(-R[0,1],-R[0,2])
+    #else:
+    #    theta = -math.asin(R[2,0])
+    #    cos_theta = math.cos(theta)
+    #    psi = math.atan2(R[2,1]/cos_theta, R[2,2]/cos_theta)
+    #    phi = math.atan2(R[1,0]/cos_theta, R[0,0]/cos_theta)
+    #return np.array([psi, theta, phi])
+
+    return np.array([z, x, y])
+
+
+
 class Joint:
     def __init__(self, name):
         self.name = name
@@ -35,7 +73,7 @@ class Joint:
         self.channels = None
 
         self.transform = None
-
+        self.euler = None
     def transformation(self):
         return self.transform @ np.array([0, 0, 0, 1])
 
@@ -47,6 +85,7 @@ def scan(mocap):
         joint = Joint(name)
         joint.offset = np.array(mocap.joint_offset(name))
         joint.channels = mocap.joint_channels(name)
+        joint.euler = np.array(mocap.joint_offset(name))
         parent = mocap.joint_parent(name)
         if parent is None:
             tree['ROOT'] = [joint]
@@ -58,7 +97,7 @@ def scan(mocap):
 
     return joints, tree
 
-def rotation(mocap, tree, frame_number, joint='ROOT', matrix=xRotation(90)):
+def rotation(mocap, tree, frame_number, joint='ROOT', matrix=np.identity(4)):
     if joint not in tree:
         return
 
@@ -76,6 +115,9 @@ def rotation(mocap, tree, frame_number, joint='ROOT', matrix=xRotation(90)):
             M = M @ rotation1(channels[i], rotate[i])
         transform = matrix @ M
         child.transform = transform
+        child.euler = rotationMatrixToEulerAngles(transform) * 180 / math.pi
+        
+        print(child.euler)
         rotation(mocap, tree, frame_number, name, transform)
 
 def rotation1(channel, rotate):

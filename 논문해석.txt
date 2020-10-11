@@ -1,0 +1,10 @@
+setJointMotorControl2 -> bvh파일을 pybullet에 적용하기 위해 사용될 함수
+
+maxForce = 0
+mode = p.POSITION_CONTROL
+p.setJointMotorControl2(objUid, jointIndex, controlMode = mode, force=maxForce)
+//objUid = bodyUniqueId, jointIndex = joint번호
+
+p.targetPosition(
+
+

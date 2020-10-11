@@ -1,0 +1,108 @@
+<mujoco model='humanoid_custom'>
+	<worldbody>
+		<body name='Hips' pos='0 0 1.4'>
+			<geom name='Hips' type='sphere' pos='0 0 0' size='0.1' />
+			<geom name='LeftPelvis' type='sphere' pos='0 .07 -.07' size='0.07' />
+			<geom name='RightPelvis' type='sphere' pos='0 -.07 -.07' size='0.07' />
+			<!--joint name='Fix' type='fixed' pos='0 0 0' /-->
+			<body name='LeftUpLeg' pos='0 .08 -.07'>
+				<geom name='LeftUpLeg' type='capsule' fromto='0 0 -.14 0 0 -.54' size='0.07' />
+				<joint name='LeftUpLeg_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+				<joint name='LeftUpLeg_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+				<joint name='LeftUpLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+				<body name='LeftLeg' pos='0 0 -.61'>
+					<geom name='LeftLeg' type='capsule' fromto='0 0 -.07 0 0 -.57' size='0.07' />
+					<joint name='LeftLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					<body name='LeftFoot' pos='0 0 -.64'>
+						<geom name='LeftFoot' type='box' pos='.08 0 -.04' size='0.14 0.07 0.04' />
+						<joint name='LeftFoot_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+						<joint name='LeftFoot_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+						<joint name='LeftFoot_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					</body>
+				</body>
+			</body>
+			<body name='RightUpLeg' pos='0 -.08 -.07'>
+				<geom name='RightUpLeg' type='capsule' fromto='0 0 -.14  0 0 -.54' size='0.07' />
+				<joint name='RightUpLeg_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+				<joint name='RightUpLeg_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+				<joint name='RightUpLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+				<body name='RightLeg' pos='0 0 -.61'>
+					<geom name='RightLeg' type='capsule' fromto='0 0 -.07 0 0 -.57' size='0.07' />
+					<joint name='RightLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					<body name='RightFoot' pos='0 0 -.64'>
+						<geom name='RightFoot' type='box' pos='.08 0 -.04' size='0.14 0.07 0.04' />
+						<joint name='RightFoot_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+						<joint name='RightFoot_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+						<joint name='RightFoot_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					</body>
+				</body>
+			</body>
+			<body name='ToSpine' pos='0 0 .17'>
+				<geom name='ToSpine' type='sphere' pos='0 0 0' size='0.07' />
+				<joint name='ToSpine_z' type='hinge' pos='0 0 -.07' axis='0 0 1' />
+				<joint name='ToSpine_x' type='hinge' pos='0 0 -.07' axis='1 0 0' />
+				<joint name='ToSpine_y' type='hinge' pos='0 0 -.07' axis='0 1 0' />
+				<body name='Spine' pos='0 0 .14'>
+					<geom name='Spine' type='sphere' pos='0 0 0' size='0.07' />
+					<joint name='Spine_z' type='hinge' pos='0 0 -.07' axis='0 0 1' />
+					<joint name='Spine_x' type='hinge' pos='0 0 -.07' axis='1 0 0' />
+					<joint name='Spine_y' type='hinge' pos='0 0 -.07' axis='0 1 0' />
+					<body name='Torso' pos='0 0 .14'>
+						<geom name='Torso' type='capsule' fromto='0 .14 0 0 -.14 0' size='0.07' />
+						<joint name='Spine1_z' type='hinge' pos='0 0 -.07' axis='0 0 1' />
+						<joint name='Spine1_x' type='hinge' pos='0 0 -.07' axis='1 0 0' />
+						<joint name='Spine1_y' type='hinge' pos='0 0 -.07' axis='0 1 0' />
+						<body name='Neck' pos='0 0 .11'>
+							<geom name='Neck' type='sphere' pos='0 0 0' size='0.04' />
+							<joint name='Neck_z' type='hinge' pos='0 0 -.04' axis='0 0 1' />
+							<joint name='Neck_x' type='hinge' pos='0 0 -.04' axis='1 0 0' />
+							<joint name='Neck_y' type='hinge' pos='0 0 -.04' axis='0 1 0' />
+							<body name='Head' pos='0 0 .14'>
+								<geom name='Head' type='sphere' pos='0 0 0' size='0.1' />
+								<joint name='Head_z' type='hinge' pos='0 0 -.1' axis='0 0 1' />
+								<joint name='Head_x' type='hinge' pos='0 0 -.1' axis='1 0 0' />
+								<joint name='Head_y' type='hinge' pos='0 0 -.1' axis='0 1 0' />
+							</body>
+						</body>
+						<body name='LeftUpperArm' pos='0 .21 0'>
+							<geom name='LeftUpperArm' type='capsule' fromto='0 .07 0 0 .37 0' size='0.07' />
+							<joint name='LeftShoulder_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+							<joint name='LeftShoulder_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+							<joint name='LeftShoulder_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+							<body name='LeftLowerArm' pos='0 .44 0'>
+								<geom name='LeftLowerArm' type='capsule' fromto='0 .07 0 0 .32 0' size='0.07' />
+								<joint name='LeftArm_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+								<joint name='LeftArm_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+								<joint name='LeftArm_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+								<body name='LeftHand' pos='0 .39 0'>
+									<geom name='LeftHand' type='sphere' pos='0 .07 0' size='0.07' />
+									<joint name='LeftForeArm_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+									<joint name='LeftForeArm_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+									<joint name='LeftForeArm_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+								</body>
+							</body>
+						</body>
+						<body name='RightUpperArm' pos='0 -.21 0'>
+							<geom name='RightUpperArm' type='capsule' fromto='0 -.07 0 0 -.37 0' size='0.07' />
+							<joint name='RightShoulder_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+							<joint name='RightShoulder_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+							<joint name='RightShoulder_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+							<body name='RightLowerArm' pos='0 -.44 0'>
+								<geom name='RightLowerArm' type='capsule' fromto='0 -.07 0 0 -.32 0' size='0.07' />
+								<joint name='RightArm_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+								<joint name='RightArm_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+								<joint name='RightArm_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+								<body name='RightHand' pos='0 -.39 0'>
+									<geom name='RightHand' type='sphere' pos='0 -.07 0' size='0.07' />
+									<joint name='RightForeArm_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+									<joint name='RightForeArm_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+									<joint name='RightForeArm_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+								</body>
+							</body>
+						</body>
+					</body>
+				</body>
+			</body>
+		</body>
+	</worldbody>
+</mujoco>

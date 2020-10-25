@@ -120,19 +120,37 @@ def rotation(mocap, tree, frame_number, joint='ROOT', matrix=np.identity(4)):
         rotate = mocap.frame_joint_channels(frame_number, name, channels)
         if joint == 'ROOT':
             pos = 3
+            #p.resetBasePositionAndOrientation(obj[0], np.array([channels[1], channels[2] , channels[0]]), [0, 0, 0, 1])
         else:
             pos = 0
         M = transpose(offset)
         for i in range(pos, pos+3):
             M = M @ rotation1(channels[i], rotate[i])
+        M = xRotation(90) @ M
         transform = matrix @ M
+        
         child.transform = transform
-        child.euler = rotationMatrixToEulerAngles(transform) * 180 / math.pi
-
-        maxForce = 500
-        #p.setJointMotorControl2(obj[0], 3, p.POSITION_CONTROL, child.euler[0],maxForce)
+        
+        child.euler = rotationMatrixToEulerAngles(M)# * 180 / math.pi
+        findjoint(child)
+        
         rotation(mocap, tree, frame_number, name, transform)
-
+        
+def findjoint(child):
+    name = child.name
+    maxForce = 1
+    numJoints = p.getNumJoints(obj[0])
+    for i in range(numJoints):
+        if name==str(p.getJointInfo(obj[0], i)[1])[2:-1].split('_')[0]:
+            print(name)
+            print(str(p.getJointInfo(obj[0], i)[1])[2:-1].split('_')[0])
+            if str(p.getJointInfo(obj[0], i)[1])[2:-1].split('_')[1]=='z':
+                p.setJointMotorControl2(bodyIndex=obj[0], jointIndex=p.getJointInfo(obj[0], i)[0], controlMode=p.POSITION_CONTROL, targetPosition=child.euler[0],force=maxForce)        
+            elif str(p.getJointInfo(obj[0], i)[1])[2:-1].split('_')[1]=='x':
+                p.setJointMotorControl2(bodyIndex=obj[0], jointIndex=p.getJointInfo(obj[0], i)[0], controlMode=p.POSITION_CONTROL, targetPosition=child.euler[1],force=maxForce)
+            elif str(p.getJointInfo(obj[0], i)[1])[2:-1].split('_')[1]=='y':
+                p.setJointMotorControl2(bodyIndex=obj[0], jointIndex=p.getJointInfo(obj[0], i)[0], controlMode=p.POSITION_CONTROL, targetPosition=child.euler[2],force=maxForce)
+            
 
 def rotation1(channel, rotate):
     _channel = str.lower(channel)
@@ -155,6 +173,7 @@ with open("Male2_bvh/Male2_A3_SwingArms.bvh") as f:
 
 joints, tree = scan(mocap)
 
+
 posX = 0
 posY = 3
 posZ = 2
@@ -162,11 +181,11 @@ posZ = 2
 #query the number of joints of the object
 print(obj[0])
 numJoints = p.getNumJoints(obj[0])
-for i in range(numJoints):
-    print(p.getJointInfo(obj[0], i))
-    print(p.getJointStateMultiDof(obj[0], i))
-    print()
-print("Number of Joints:", numJoints)
+#for i in range(numJoints):
+#    print(str(p.getJointInfo(obj[0], i)[1])[2:-1].split('_'))
+    #print(p.getJointStateMultiDof(obj[0], i))
+#    print()
+#print("Number of Joints:", numJoints)
 
 
 
@@ -174,7 +193,7 @@ joints, tree = scan(mocap)
 print(len(joints))
 
 #set the gravity acceleration
-p.setGravity(0, 0, -9.8)
+p.setGravity(0, 0, 0)
 p.setRealTimeSimulation(True)
 
 

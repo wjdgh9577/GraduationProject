@@ -2,41 +2,11 @@
 	<worldbody>
 		<body name='Hips' pos='0 0 1.4'>
 			<geom name='Hips' type='sphere' pos='0 0 0' size='0.1' />
+			<!--joint name='Hips_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+			<joint name='Hips_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+			<joint name='Hips_y' type='hinge' pos='0 0 0' axis='0 1 0' /-->
 			<geom name='LeftPelvis' type='sphere' pos='0 .07 -.07' size='0.07' />
 			<geom name='RightPelvis' type='sphere' pos='0 -.07 -.07' size='0.07' />
-			<!--joint name='Fix' type='fixed' pos='0 0 0' /-->
-			<body name='LeftUpLeg' pos='0 .08 -.07'>
-				<geom name='LeftUpLeg' type='capsule' fromto='0 0 -.14 0 0 -.54' size='0.07' />
-				<joint name='LeftUpLeg_z' type='hinge' pos='0 0 0' axis='0 0 1' />
-				<joint name='LeftUpLeg_x' type='hinge' pos='0 0 0' axis='1 0 0' />
-				<joint name='LeftUpLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
-				<body name='LeftLeg' pos='0 0 -.61'>
-					<geom name='LeftLeg' type='capsule' fromto='0 0 -.07 0 0 -.57' size='0.07' />
-					<joint name='LeftLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
-					<body name='LeftFoot' pos='0 0 -.64'>
-						<geom name='LeftFoot' type='box' pos='.08 0 -.04' size='0.14 0.07 0.04' />
-						<joint name='LeftFoot_z' type='hinge' pos='0 0 0' axis='0 0 1' />
-						<joint name='LeftFoot_x' type='hinge' pos='0 0 0' axis='1 0 0' />
-						<joint name='LeftFoot_y' type='hinge' pos='0 0 0' axis='0 1 0' />
-					</body>
-				</body>
-			</body>
-			<body name='RightUpLeg' pos='0 -.08 -.07'>
-				<geom name='RightUpLeg' type='capsule' fromto='0 0 -.14  0 0 -.54' size='0.07' />
-				<joint name='RightUpLeg_z' type='hinge' pos='0 0 0' axis='0 0 1' />
-				<joint name='RightUpLeg_x' type='hinge' pos='0 0 0' axis='1 0 0' />
-				<joint name='RightUpLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
-				<body name='RightLeg' pos='0 0 -.61'>
-					<geom name='RightLeg' type='capsule' fromto='0 0 -.07 0 0 -.57' size='0.07' />
-					<joint name='RightLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
-					<body name='RightFoot' pos='0 0 -.64'>
-						<geom name='RightFoot' type='box' pos='.08 0 -.04' size='0.14 0.07 0.04' />
-						<joint name='RightFoot_z' type='hinge' pos='0 0 0' axis='0 0 1' />
-						<joint name='RightFoot_x' type='hinge' pos='0 0 0' axis='1 0 0' />
-						<joint name='RightFoot_y' type='hinge' pos='0 0 0' axis='0 1 0' />
-					</body>
-				</body>
-			</body>
 			<body name='ToSpine' pos='0 0 .17'>
 				<geom name='ToSpine' type='sphere' pos='0 0 0' size='0.07' />
 				<joint name='ToSpine_z' type='hinge' pos='0 0 -.07' axis='0 0 1' />
@@ -52,17 +22,11 @@
 						<joint name='Spine1_z' type='hinge' pos='0 0 -.07' axis='0 0 1' />
 						<joint name='Spine1_x' type='hinge' pos='0 0 -.07' axis='1 0 0' />
 						<joint name='Spine1_y' type='hinge' pos='0 0 -.07' axis='0 1 0' />
-						<body name='Neck' pos='0 0 .11'>
-							<geom name='Neck' type='sphere' pos='0 0 0' size='0.04' />
-							<joint name='Neck_z' type='hinge' pos='0 0 -.04' axis='0 0 1' />
-							<joint name='Neck_x' type='hinge' pos='0 0 -.04' axis='1 0 0' />
-							<joint name='Neck_y' type='hinge' pos='0 0 -.04' axis='0 1 0' />
-							<body name='Head' pos='0 0 .14'>
-								<geom name='Head' type='sphere' pos='0 0 0' size='0.1' />
-								<joint name='Head_z' type='hinge' pos='0 0 -.1' axis='0 0 1' />
-								<joint name='Head_x' type='hinge' pos='0 0 -.1' axis='1 0 0' />
-								<joint name='Head_y' type='hinge' pos='0 0 -.1' axis='0 1 0' />
-							</body>
+						<body name='Head' pos='0 0 .17'>
+							<geom name='Head' type='sphere' pos='0 0 0' size='0.1' />
+							<joint name='Neck_z' type='hinge' pos='0 0 -.1' axis='0 0 1' />
+							<joint name='Neck_x' type='hinge' pos='0 0 -.1' axis='1 0 0' />
+							<joint name='Neck_y' type='hinge' pos='0 0 -.1' axis='0 1 0' />
 						</body>
 						<body name='LeftUpperArm' pos='0 .21 0'>
 							<geom name='LeftUpperArm' type='capsule' fromto='0 .07 0 0 .37 0' size='0.07' />
@@ -100,6 +64,38 @@
 								</body>
 							</body>
 						</body>
+					</body>
+				</body>
+			</body>
+			<body name='LeftUpLeg' pos='0 .08 -.07'>
+				<geom name='LeftUpLeg' type='capsule' fromto='0 0 -.14 0 0 -.54' size='0.07' />
+				<joint name='LeftUpLeg_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+				<joint name='LeftUpLeg_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+				<joint name='LeftUpLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+				<body name='LeftLeg' pos='0 0 -.61'>
+					<geom name='LeftLeg' type='capsule' fromto='0 0 -.07 0 0 -.57' size='0.07' />
+					<joint name='LeftLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					<body name='LeftFoot' pos='0 0 -.64'>
+						<geom name='LeftFoot' type='box' pos='.08 0 -.04' size='0.14 0.07 0.04' />
+						<joint name='LeftFoot_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+						<joint name='LeftFoot_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+						<joint name='LeftFoot_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					</body>
+				</body>
+			</body>
+			<body name='RightUpLeg' pos='0 -.08 -.07'>
+				<geom name='RightUpLeg' type='capsule' fromto='0 0 -.14  0 0 -.54' size='0.07' />
+				<joint name='RightUpLeg_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+				<joint name='RightUpLeg_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+				<joint name='RightUpLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+				<body name='RightLeg' pos='0 0 -.61'>
+					<geom name='RightLeg' type='capsule' fromto='0 0 -.07 0 0 -.57' size='0.07' />
+					<joint name='RightLeg_y' type='hinge' pos='0 0 0' axis='0 1 0' />
+					<body name='RightFoot' pos='0 0 -.64'>
+						<geom name='RightFoot' type='box' pos='.08 0 -.04' size='0.14 0.07 0.04' />
+						<joint name='RightFoot_z' type='hinge' pos='0 0 0' axis='0 0 1' />
+						<joint name='RightFoot_x' type='hinge' pos='0 0 0' axis='1 0 0' />
+						<joint name='RightFoot_y' type='hinge' pos='0 0 0' axis='0 1 0' />
 					</body>
 				</body>
 			</body>
